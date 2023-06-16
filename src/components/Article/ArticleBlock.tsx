@@ -1,59 +1,71 @@
 import React from "react";
 import { ArticleModel } from "@/api/articles/models";
-import dayjs from "dayjs";
-import routes from "@/constants/routes";
-import { Link } from "react-router-dom";
-import CommentIcon from "@mui/icons-material/Comment";
 import { Chip, styled, Typography } from "@mui/material";
+import ArticleActions from "@/components/Article/ArticleActions";
+import CommentIcon from "@mui/icons-material/Comment";
+import dayjs from "dayjs";
 
-type ArticleCardProps = {
+// Components
+
+// Stores, utils, libs
+
+
+type ArticleBlockProps = {
 	className?: string,
-	article: ArticleModel
+	article: ArticleModel,
+	children?: React.ReactNode,
 }
-const ArticleCard: React.FC<ArticleCardProps> = (
+
+const ArticleBlock: React.FC<ArticleBlockProps> = (
 	{
 		className,
 		article,
 	}
 ) => {
-	return <Link to={routes.article(article.id)}>
-		<Root className={className}>
-			<Poster/>
-			<Main>
-				<Header>
+	return <Root className={className}>
+		<Poster/>
+		<Main>
+			<Header>
+				<HeaderMain>
 					<Chip variant={"outlined"} label={article.theme} size={"small"}/>
 					<Typography variant={"body2"} color={"text.secondary"}>
 						{article.author}
 					</Typography>
-				</Header>
-				<Typography variant={"h5"}>
-					{article.title}
-				</Typography>
-				<Typography variant={"body1"}>
-					{article.shortText}
-				</Typography>
-				<Footer>
-					<Stat>
-						<CommentIcon fontSize={"small"}/>
-						{article.commentsCount}
-					</Stat>
-					<PublishDate>
-						{dayjs(article.publishDate).format("DD.MM.YYYY")}
-					</PublishDate>
-				</Footer>
-			</Main>
-		</Root>
-	</Link>;
+				</HeaderMain>
+				<ArticleActions
+					article={article}
+				/>
+			</Header>
+			<Typography variant={"h4"}>
+				{article.title}
+			</Typography>
+			<Footer>
+				<Stat>
+					<CommentIcon fontSize={"small"}/>
+					{article.commentsCount}
+				</Stat>
+				<PublishDate>
+					{dayjs(article.publishDate).format("DD.MM.YYYY")}
+				</PublishDate>
+			</Footer>
+			<Typography variant={"body1"}>
+				{article.text}
+			</Typography>
+		</Main>
+	</Root>;
 };
 
 const Root = styled("div")`
-  border-radius: ${p => p.theme.shape.borderRadius * 2}px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  border-bottom-left-radius: ${p => p.theme.shape.borderRadius * 2}px;
+  border-bottom-right-radius: ${p => p.theme.shape.borderRadius * 2}px;
 `;
 
 const Poster = styled("div")`
   background: #C2C8C7;
-  height: 180px;
+  height: 220px;
 `;
 
 const Main = styled("div")`
@@ -61,14 +73,22 @@ const Main = styled("div")`
   flex-direction: column;
   gap: ${p => p.theme.spacing(1.75)};
   background: ${p => p.theme.palette.background.paper};
-  padding: ${p => p.theme.spacing(2)};
+  padding: ${p => p.theme.spacing(3)};
 `;
 
 const Header = styled("div")`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: ${p => p.theme.spacing(1.25)};
 `;
+
+const HeaderMain = styled("div")`
+  display: flex;
+  align-items: center;
+  gap: ${p => p.theme.spacing(1.25)};
+`;
+
 
 const Footer = styled("div")`
   display: flex;
@@ -93,4 +113,4 @@ const PublishDate = styled("div")`
   color: ${p => p.theme.palette.text.moreSecondary}
 `;
 
-export default ArticleCard;
+export default ArticleBlock;

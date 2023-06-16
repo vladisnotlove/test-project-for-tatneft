@@ -8,19 +8,25 @@ import Article from "../Article/index";
 import Header from "../Header/index";
 import { CssBaseline } from "@mui/material";
 
-import "@/configs/dayjs";  // configure dayjs
+import "@/styles/reset.sass";
+import "@/styles/fonts.sass";
+import "@/styles/global.sass";
+
+import "@/configs/dayjs";
+import Layout from "@/components/@layouts/Layout";  // configure dayjs
 
 const App: React.FC = () => {
 	return <ThemeProvider theme={theme}>
 		<CssBaseline />
 		<BrowserRouter>
-			<Header />
-			<Routes>
-				<Route path={"/"} element={<ArticleList />} />
-				<Route path={"/add"} element={<AddArticleForm />} />
-				<Route path={"/:articleId"} element={<Article />} />
-				<Route path={"/:articleId/edit"} element={<AddArticleForm />} />
-			</Routes>
+			<Layout>
+				<Routes>
+					<Route path={"/"} element={<ArticleList />} />
+					<Route path={"/add"} element={<AddArticleForm />} />
+					<Route path={"/:articleId"} element={<Article />} />
+					<Route path={"/:articleId/edit"} element={<AddArticleForm />} />
+				</Routes>
+			</Layout>
 		</BrowserRouter>
 	</ThemeProvider>
 };

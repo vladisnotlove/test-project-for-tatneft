@@ -59,6 +59,7 @@ module.exports = {
 			"@/api": path.resolve(__dirname, 'src/api/'),
 			"@/components": path.resolve(__dirname, 'src/components/'),
 			"@/configs": path.resolve(__dirname, 'src/configs/'),
+			"@/constants": path.resolve(__dirname, 'src/constants/'),
 			"@/styles": path.resolve(__dirname, 'src/styles/'),
 		},
 		extensions: ["*", ".js", ".jsx", ".ts", ".tsx", ".scss", "sass"],

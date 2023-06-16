@@ -32,6 +32,11 @@ let theme = createTheme({
 			fontWeight: "500",
 			lineHeight: "125%",
 		},
+		h4: {
+			fontSize: "26px",
+			fontWeight: "500",
+			lineHeight: "125%",
+		}
 	}
 });
 
@@ -39,15 +44,9 @@ let theme = createTheme({
 theme = createTheme({
 	...theme,
 	components: {
-		MuiAppBar: {
+		MuiButton: {
 			defaultProps: {
-				elevation: 0,
-				color: "default"
-			},
-			styleOverrides: {
-				root: {
-					borderBottom: `1px solid ${theme.palette.divider}`
-				}
+				disableElevation: true,
 			}
 		}
 	}

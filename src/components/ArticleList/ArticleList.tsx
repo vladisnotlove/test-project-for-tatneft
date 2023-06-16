@@ -1,6 +1,7 @@
-import React from "react";
-import { styled } from "@mui/material";
-import { ArticleModel } from "@/api/articles/models";
+import React, { useEffect, useState } from "react";
+import { CircularProgress, styled, Typography } from "@mui/material";
+import { useList, useStore } from "effector-react";
+import { $articles, $articlesLoaded, getArticlesFx, postArticleFx } from "@/api/articles/requests";
 import ArticleCard from "@/components/ArticleCard";
 
 type ArticleListProps = {
@@ -13,31 +14,45 @@ const ArticleList: React.FC<ArticleListProps> = (
 		className,
 	}
 ) => {
-	const articles: ArticleModel[] = new Array(20).fill(0).map((_item, index) => ({
-		id: index,
-		theme: "игры",
-		author: "Николаев Владислав",
-		title: "Заголовок статьи о том-то",
-		shortText: "Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру ",
-		text: "Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько абзацев более менее осмысленного текста рыбы на русском языке, а начинающему оратору отточить навык публичных выступлений в домашних условиях. При создании генератора мы использовали небезизвестный универсальный код речей. Текст генерируется абзацами случайным образом от двух до десяти предложений в абзаце, что позволяет сделать текст более привлекательным и живым для визуально-слухового восприятия.\n\nПо своей сути рыбатекст является альтернативой традиционному lorem ipsum, который вызывает у некторых людей недоумение при попытках прочитать рыбу текст. В отличии от lorem ipsum, текст рыба на русском языке наполнит любой макет непонятным смыслом и придаст неповторимый колорит советских времен.",
-		publishDate: new Date(2023, 5, 10).getTime(),
-		commentsCount: 22,
-	}))
+	const articlesJSX = useList($articles, (article) => {
+		return <ArticleCard
+			key={article.id}
+			article={article}
+		/>
+	});
+	const articlesLoaded = useStore($articlesLoaded);
+
+	useEffect(() => {
+		getArticlesFx();
+	}, [])
 
 	return <Root className={className}>
 		<FiltersContainer>
 			filters
 		</FiltersContainer>
 		<ArticlesContainer>
-			{articles.map(article => (
-				<ArticleCard
-					key={article.id}
-					article={article}
-				/>
-			))}
+			{!articlesLoaded && (
+				<Loading />
+			)}
+			{articlesLoaded && articlesJSX}
 		</ArticlesContainer>
 		<ActionsContainer>
-			actions
+			<button
+				onClick={() => {
+					postArticleFx({
+						id: Date.now(),
+						theme: "игры",
+						author: "Николаев Владислав",
+						title: "Заголовок статьи о том-то",
+						shortText: "Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру ",
+						text: "Сайт рыбатекст поможет дизайнеру, верстальщику, вебмастеру сгенерировать несколько абзацев более менее осмысленного текста рыбы на русском языке, а начинающему оратору отточить навык публичных выступлений в домашних условиях. При создании генератора мы использовали небезизвестный универсальный код речей. Текст генерируется абзацами случайным образом от двух до десяти предложений в абзаце, что позволяет сделать текст более привлекательным и живым для визуально-слухового восприятия.\n\nПо своей сути рыбатекст является альтернативой традиционному lorem ipsum, который вызывает у некторых людей недоумение при попытках прочитать рыбу текст. В отличии от lorem ipsum, текст рыба на русском языке наполнит любой макет непонятным смыслом и придаст неповторимый колорит советских времен.",
+						publishDate: new Date(2023, 5, 10).getTime(),
+						commentsCount: 22,
+					})
+				}}
+			>
+				add
+			</button>
 		</ActionsContainer>
 	</Root>;
 };
@@ -51,13 +66,20 @@ const Root = styled("div")`
   padding: ${p => p.theme.spacing(4, 2.5)};
 `
 
+const Loading = styled((props: React.HTMLAttributes<HTMLDivElement>) => <div {...props}><CircularProgress /></div>)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 const FiltersContainer = styled("div")`
   grid-area: filters;
 `
 
 const ArticlesContainer = styled("div")`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   grid-area: articles;
   gap: ${p => p.theme.spacing(3)}
 `
