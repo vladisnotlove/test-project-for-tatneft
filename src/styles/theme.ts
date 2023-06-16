@@ -1,23 +1,48 @@
-import { createTheme } from '@mui/material/styles'
+import { createTheme } from "@mui/material/styles";
 
+// init variables
 let theme = createTheme({
 	palette: {
+		text: {
+			primary: "rgba(0,0,0,0.92)",
+			secondary: "rgba(0,0,0,0.64)",
+			moreSecondary: "rgba(0,0,0,0.32)",
+		},
 		primary: {
-			main: '#48bb0e'
+			light: "#D6E2CB",
+			main: "#ABD0AC",
+		},
+		background: {
+			default: "#F5F5F5",
+			paper: "#fff",
 		}
 	},
 	typography: {
-		fontFamily: 'Roboto'
+		fontFamily: "Roboto",
+		body1: {
+			fontSize: "16px",
+			lineHeight: "150%",
+		},
+		body2: {
+			fontSize: "14px",
+			lineHeight: "150%",
+		},
+		h5: {
+			fontSize: "22px",
+			fontWeight: "500",
+			lineHeight: "125%",
+		},
 	}
-})
+});
 
+// override component styles & props
 theme = createTheme({
 	...theme,
 	components: {
 		MuiAppBar: {
 			defaultProps: {
 				elevation: 0,
-				color: 'default'
+				color: "default"
 			},
 			styleOverrides: {
 				root: {
@@ -26,6 +51,6 @@ theme = createTheme({
 			}
 		}
 	}
-})
+});
 
-export default theme
+export default theme;

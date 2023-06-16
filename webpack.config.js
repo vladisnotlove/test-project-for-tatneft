@@ -56,6 +56,7 @@ module.exports = {
 	},
 	resolve: {
 		alias: {
+			"@/api": path.resolve(__dirname, 'src/api/'),
 			"@/components": path.resolve(__dirname, 'src/components/'),
 			"@/configs": path.resolve(__dirname, 'src/configs/'),
 			"@/styles": path.resolve(__dirname, 'src/styles/'),

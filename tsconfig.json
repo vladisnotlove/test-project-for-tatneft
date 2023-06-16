@@ -15,6 +15,7 @@
       }
     ],
     "paths": {
+      "@/api/*": ["./src/api/*"],
       "@/components/*": ["./src/components/*"],
       "@/configs/*": ["./src/configs/*"],
       "@/styles/*": ["./src/styles/*"]
