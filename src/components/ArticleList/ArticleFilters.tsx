@@ -2,9 +2,9 @@ import React, { useRef } from "react";
 import { Autocomplete, Button, styled, TextField } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useStore } from "effector-react";
-import { $authors, $themes } from "@/api/articles/requests";
-import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
+import { $authors, $themes } from "@/components/App/state";
+import { DatePicker } from "@mui/x-date-pickers";
 
 export type FormValues = {
 	themes: string[],

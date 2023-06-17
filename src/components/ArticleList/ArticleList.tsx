@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, CircularProgress, styled, Typography } from "@mui/material";
-import { useList, useStore } from "effector-react";
-import { $articles, $articlesLoaded, getArticlesFx, postArticleFx } from "@/api/articles/requests";
+import { useStore } from "effector-react";
+import { getArticlesFx, postArticleFx } from "@/api/articles/requests";
 import ArticleCard from "@/components/ArticleCard";
 import { useNavigate } from "react-router";
 import routes from "@/constants/routes";
 import ArticleFilters, { FormValues } from "@/components/ArticleList/ArticleFilters";
-import { Search as SearchIcon } from "@mui/icons-material";
 import ArticleSearch from "@/components/ArticleList/ArticleSearch";
 import useFilteredArticles from "@/components/ArticleList/useFilteredArticles";
+import { $articles, $articlesLoaded } from "@/components/App/state";
 
 type ArticleListProps = {
 	className?: string,

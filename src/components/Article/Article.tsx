@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "effector-react";
-import { $articles, $articlesLoaded, getArticlesFx } from "@/api/articles/requests";
+import { getArticlesFx } from "@/api/articles/requests";
 import { useParams } from "react-router";
 import { styled, Typography, CircularProgress, TypographyProps, Container } from "@mui/material";
 import ArticleBlock from "@/components/Article/ArticleBlock";
+import { $articles, $articlesLoaded } from "@/components/App/state";
 
 type ArticleProps = {
 	className?: string,

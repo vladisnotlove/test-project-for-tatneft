@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo } from "react";
 import AddArticleForm from "@/components/AddArticleForm";
 import { useNavigate, useParams } from "react-router";
-import { $articles, $articlesLoaded, getArticlesFx, patchArticleFx, postArticleFx } from "@/api/articles/requests";
+import { getArticlesFx, patchArticleFx, postArticleFx } from "@/api/articles/requests";
 import routes from "@/constants/routes";
 import { useStore } from "effector-react";
 import { ArticleModel } from "@/api/articles/models";
 import { CircularProgress, Container, styled, Typography, TypographyProps } from "@mui/material";
+import { $articles, $articlesLoaded } from "@/components/App/state";
 
 type EditArticlePageProps = {
 	className?: string,

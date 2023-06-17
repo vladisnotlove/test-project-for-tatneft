@@ -1,4 +1,4 @@
-import { createStore, createEffect } from "effector";
+import { createEffect } from "effector";
 import { ArticleModel } from "./models";
 import wait from "@/api/@helpers/wait";
 
@@ -54,32 +54,4 @@ export const deleteArticleFx = createEffect(async (id: number) => {
 	await wait(1000);
 	return id;
 });
-
-export const $articlesLoaded = createStore(false)
-	.on(getArticlesFx.doneData, () => true)
-
-export const $articles = createStore<ArticleModel[]>([])
-	.on(getArticlesFx.doneData, (state, payload) => payload)
-	.on(postArticleFx.doneData, (state, payload) => [payload, ...state])
-	.on(patchArticleFx.doneData, (state, payload) => {
-		return state.map(article => {
-			if (article.id === payload.id) return payload;
-			return article
-		})
-	})
-	.on(deleteArticleFx.doneData, (state, payload) => {
-		return state.filter(article => article.id !== payload)
-	})
-
-export const $themes = createStore<string[]>([])
-	.on($articles, (state, payload) => {
-		const allThemes = payload.map(article => article.theme);
-		return [...new Set(allThemes)]; // remove duplicates
-	})
-
-export const $authors = createStore<string[]>([])
-	.on($articles, (state, payload) => {
-		const allAuthors = payload.map(article => article.author);
-		return [...new Set(allAuthors)]; // remove duplicates
-	})
 
