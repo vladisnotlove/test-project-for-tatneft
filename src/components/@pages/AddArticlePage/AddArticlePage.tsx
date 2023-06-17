@@ -3,6 +3,7 @@ import AddArticleForm from "@/components/AddArticleForm";
 import { useNavigate } from "react-router";
 import { postArticleFx } from "@/api/articles/requests";
 import routes from "@/constants/routes";
+import { useStore } from "effector-react";
 
 type AddArticlePageProps = {
 	className?: string,
@@ -15,6 +16,7 @@ const AddArticlePage: React.FC<AddArticlePageProps> = (
 	}
 ) => {
 	const navigate = useNavigate();
+	const posting = useStore(postArticleFx.pending);
 
 	return <AddArticleForm
 		className={className}
@@ -24,6 +26,7 @@ const AddArticlePage: React.FC<AddArticlePageProps> = (
 				navigate(routes.articles())
 			})
 		}}
+		loading={posting}
 	/>;
 };
 

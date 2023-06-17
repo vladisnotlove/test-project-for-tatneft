@@ -1,5 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material";
+import { Link } from "react-router-dom";
+import routes from "@/constants/routes";
 
 export const headerHeight = 7; // in spacings
 
@@ -16,7 +18,9 @@ const Header: React.FC<HeaderProps> = (
 	return <Root
 		className={className}
 	>
-		articles-app
+		<Link to={routes.articles()}>
+			articles-app
+		</Link>
 	</Root>;
 };
 

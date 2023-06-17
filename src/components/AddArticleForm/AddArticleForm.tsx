@@ -3,6 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Button, Container, styled, TextField, Typography } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
+import { LoadingButton } from "@mui/lab";
 
 type FormValues = {
 	author: string,
@@ -17,6 +18,7 @@ type AddArticleProps = {
 	defaultValues?: Partial<FormValues>,
 	title: string,
 	onSubmit: (data: FormValues) => void,
+	loading?: boolean,
 }
 
 const AddArticleForm: React.FC<AddArticleProps> = (
@@ -25,6 +27,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 		defaultValues = {},
 		title,
 		onSubmit,
+		loading,
 	}
 ) => {
 	const {
@@ -69,6 +72,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 
 						label={"Автор*"}
 						variant={"filled"}
+						disabled={loading}
 					/>;
 				}}
 				rules={{
@@ -89,6 +93,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 
 						label={"Тема*"}
 						variant={"filled"}
+						disabled={loading}
 					/>;
 				}}
 				rules={{
@@ -109,6 +114,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 
 						label={"Заголовок*"}
 						variant={"filled"}
+						disabled={loading}
 					/>;
 				}}
 				rules={{
@@ -130,6 +136,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 						variant={"filled"}
 						multiline
 						minRows={5}
+						disabled={loading}
 					/>;
 				}}
 				rules={{
@@ -159,6 +166,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 							}
 						}}
 						format={"DD/MM/YYYY"}
+						disabled={loading}
 					/>;
 				}}
 				rules={{
@@ -171,9 +179,14 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 				}}
 			/>
 			<FormActions>
-				<Button variant={"contained"} type={"submit"}>
+				<LoadingButton
+					variant={"contained"}
+					type={"submit"}
+					disabled={loading}
+					loading={loading}
+				>
 					Сохранить
-				</Button>
+				</LoadingButton>
 			</FormActions>
 		</Form>
 	</Root>;

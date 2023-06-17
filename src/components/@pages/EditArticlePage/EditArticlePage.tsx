@@ -38,6 +38,8 @@ const EditArticlePage: React.FC<EditArticlePageProps> = (
 		}
 	}, [articlesLoaded])
 
+	const patching = useStore(patchArticleFx.pending);
+
 	if (!articlesLoaded) {
 		return <StyledContainer>
 			<Loading />
@@ -61,6 +63,7 @@ const EditArticlePage: React.FC<EditArticlePageProps> = (
 			})
 		}}
 		defaultValues={article}
+		loading={patching}
 	/>;
 };
 
