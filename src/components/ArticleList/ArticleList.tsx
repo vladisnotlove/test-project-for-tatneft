@@ -27,8 +27,8 @@ const ArticleList: React.FC<ArticleListProps> = (
 	const articlesLoaded = useStore($articlesLoaded);
 
 	useEffect(() => {
-		getArticlesFx();
-	}, []);
+		if (!articlesLoaded) getArticlesFx();
+	}, [articlesLoaded]);
 
 	return <Root className={className}>
 		<FiltersContainer>

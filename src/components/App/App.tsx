@@ -10,6 +10,7 @@ import Layout from "@/components/@layouts/Layout";
 import ArticlesPage from "@/components/@pages/ArticlesPage";
 import ArticlePage from "@/components/@pages/ArticlePage";
 import AddArticlePage from "@/components/@pages/AddArticlePage";
+import EditArticlePage from "@/components/@pages/EditArticlePage/EditArticlePage";
 
 // global sass
 import "@/styles/reset.sass";
@@ -29,7 +30,7 @@ const App: React.FC = () => {
 						<Route path={routePatterns.articles()} element={<ArticlesPage />} />
 						<Route path={routePatterns.addArticle()} element={<AddArticlePage />} />
 						<Route path={routePatterns.article()} element={<ArticlePage />} />
-						{/*<Route path={"/:articleId/edit"} element={<AddArticleForm />} />*/}
+						<Route path={routePatterns.editArticle()} element={<EditArticlePage />} />
 					</Routes>
 				</Layout>
 			</BrowserRouter>

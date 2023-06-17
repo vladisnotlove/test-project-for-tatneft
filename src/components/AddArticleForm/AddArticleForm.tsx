@@ -14,7 +14,7 @@ type FormValues = {
 
 type AddArticleProps = {
 	className?: string,
-	defaultValues?: FormValues,
+	defaultValues?: Partial<FormValues>,
 	title: string,
 	onSubmit: (data: FormValues) => void,
 }
@@ -22,7 +22,7 @@ type AddArticleProps = {
 const AddArticleForm: React.FC<AddArticleProps> = (
 	{
 		className,
-		defaultValues,
+		defaultValues = {},
 		title,
 		onSubmit,
 	}
@@ -62,6 +62,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 					return <TextField
 						value={field.value || ""}
 						onChange={field.onChange}
+						placeholder={defaultValues.author}
 
 						helperText={fieldState.error?.message}
 						error={!!fieldState.error?.message}
@@ -81,6 +82,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 					return <TextField
 						value={field.value || ""}
 						onChange={field.onChange}
+						placeholder={defaultValues.theme}
 
 						helperText={fieldState.error?.message}
 						error={!!fieldState.error?.message}
@@ -100,6 +102,7 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 					return <TextField
 						value={field.value || ""}
 						onChange={field.onChange}
+						placeholder={defaultValues.theme}
 
 						helperText={fieldState.error?.message}
 						error={!!fieldState.error?.message}
