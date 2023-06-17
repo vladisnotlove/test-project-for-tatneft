@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, CircularProgress, styled, Typography } from "@mui/material";
 import { useList, useStore } from "effector-react";
 import { $articles, $articlesLoaded, getArticlesFx, postArticleFx } from "@/api/articles/requests";
 import ArticleCard from "@/components/ArticleCard";
 import { useNavigate } from "react-router";
 import routes from "@/constants/routes";
+import ArticleFilters, { FormValues } from "@/components/ArticleList/ArticleFilters";
+import { Search as SearchIcon } from "@mui/icons-material";
+import ArticleSearch from "@/components/ArticleList/ArticleSearch";
+import useFilteredArticles from "@/components/ArticleList/useFilteredArticles";
 
 type ArticleListProps = {
 	className?: string,
@@ -18,27 +22,58 @@ const ArticleList: React.FC<ArticleListProps> = (
 ) => {
 	const navigate = useNavigate();
 
-	const articlesJSX = useList($articles, (article) => {
-		return <ArticleCard
-			key={article.id}
-			article={article}
-		/>;
-	});
 	const articlesLoaded = useStore($articlesLoaded);
+	const articles = useStore($articles);
+
+	const [filters, setFilters] = useState<FormValues>({
+		authors: [],
+		themes: [],
+		publishDate: null,
+	});
+	const [searchText, setSearchText] = useState<string>("");
+
+	const params = useMemo(() => {
+		return {
+			...filters,
+			searchText
+		}
+	}, [filters, searchText])
 
 	useEffect(() => {
 		if (!articlesLoaded) getArticlesFx();
 	}, [articlesLoaded]);
 
+	const filteredArticles = useFilteredArticles(articles, params);
+
 	return <Root className={className}>
 		<FiltersContainer>
-			filters
+			<ArticleSearch
+				onSubmit={setSearchText}
+			/>
+			<ArticleFilters
+				onSubmit={setFilters}
+			/>
 		</FiltersContainer>
 		<ArticlesContainer>
 			{!articlesLoaded && (
 				<Loading/>
 			)}
-			{articlesLoaded && articlesJSX}
+			{articlesLoaded && filteredArticles.map((article) => {
+				return <ArticleCard
+					key={article.id}
+					article={article}
+				/>;
+			})}
+			{articlesLoaded && articles.length === 0 &&
+				<Typography color={"text.secondary"}>
+					Нет статей
+				</Typography>
+			}
+			{articlesLoaded && articles.length > 0 && filteredArticles.length === 0 &&
+				<Typography color={"text.secondary"}>
+					Статьи не найдены
+				</Typography>
+			}
 		</ArticlesContainer>
 		<ActionsContainer>
 			<Button
@@ -55,22 +90,18 @@ const ArticleList: React.FC<ArticleListProps> = (
 
 const Root = styled("div")`
   display: grid;
-  grid-template-columns: 200px 1fr 200px;
+  grid-template-columns: 240px 1fr 200px;
   grid-template-areas: 
 	"filters articles actions";
   gap: ${p => p.theme.spacing(5)};
   padding: ${p => p.theme.spacing(4, 2.5)};
 `;
 
-const Loading = styled((props: React.HTMLAttributes<HTMLDivElement>) => <div {...props}><CircularProgress/></div>)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
 const FiltersContainer = styled("div")`
   grid-area: filters;
+  display: flex;
+  flex-direction: column;
+  gap: ${p => p.theme.spacing(5)};
 `;
 
 const ArticlesContainer = styled("div")`
@@ -82,6 +113,13 @@ const ArticlesContainer = styled("div")`
 
 const ActionsContainer = styled("div")`
   grid-area: actions;
+`;
+
+const Loading = styled((props: React.HTMLAttributes<HTMLDivElement>) => <div {...props}><CircularProgress/></div>)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 export default ArticleList;

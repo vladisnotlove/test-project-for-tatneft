@@ -71,3 +71,15 @@ export const $articles = createStore<ArticleModel[]>([])
 		return state.filter(article => article.id !== payload)
 	})
 
+export const $themes = createStore<string[]>([])
+	.on($articles, (state, payload) => {
+		const allThemes = payload.map(article => article.theme);
+		return [...new Set(allThemes)]; // remove duplicates
+	})
+
+export const $authors = createStore<string[]>([])
+	.on($articles, (state, payload) => {
+		const allAuthors = payload.map(article => article.author);
+		return [...new Set(allAuthors)]; // remove duplicates
+	})
+

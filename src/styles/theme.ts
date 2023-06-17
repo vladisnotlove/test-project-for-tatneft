@@ -12,7 +12,7 @@ let theme = createTheme({
 		},
 		primary: {
 			light: "#D6E2CB",
-			main: "#ABD0AC",
+			main: "#afc7af",
 		},
 		background: {
 			default: "#F5F5F5",
