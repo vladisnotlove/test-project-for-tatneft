@@ -32,10 +32,12 @@ const Root = styled("div")`
 const StyledHeader = styled(Header)`
   position: sticky;
   top: 0;
+  z-index: 2;
 `
 
 const Content = styled("div")`
   min-height: calc(100vh - ${p => p.theme.spacing(headerHeight)});
+  padding-bottom: ${p => p.theme.spacing(3)};
   height: 1px;
 `
 

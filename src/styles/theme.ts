@@ -1,3 +1,5 @@
+// need to add types of theme for date-pickers
+import type {} from '@mui/x-date-pickers/themeAugmentation';
 import { createTheme } from "@mui/material/styles";
 
 // init variables

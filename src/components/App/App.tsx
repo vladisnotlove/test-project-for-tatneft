@@ -1,33 +1,39 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ArticleList from "@/components/ArticleList";
-import AddArticleForm from "@/components/AddArticleForm";
-import { ThemeProvider } from "@mui/material/styles";
+import { routePatterns } from "@/constants/routes";
 import theme from "@/styles/theme";
-import Article from "../Article/index";
-import Header from "../Header/index";
+import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import Layout from "@/components/@layouts/Layout";
+import ArticlesPage from "@/components/@pages/ArticlesPage";
+import ArticlePage from "@/components/@pages/ArticlePage";
+import AddArticlePage from "@/components/@pages/AddArticlePage";
 
+// global sass
 import "@/styles/reset.sass";
 import "@/styles/fonts.sass";
 import "@/styles/global.sass";
 
+// configure dayjs
 import "@/configs/dayjs";
-import Layout from "@/components/@layouts/Layout";  // configure dayjs
 
 const App: React.FC = () => {
-	return <ThemeProvider theme={theme}>
-		<CssBaseline />
-		<BrowserRouter>
-			<Layout>
-				<Routes>
-					<Route path={"/"} element={<ArticleList />} />
-					<Route path={"/add"} element={<AddArticleForm />} />
-					<Route path={"/:articleId"} element={<Article />} />
-					<Route path={"/:articleId/edit"} element={<AddArticleForm />} />
-				</Routes>
-			</Layout>
-		</BrowserRouter>
+	return <ThemeProvider theme={theme}>  {/* mui theme */}
+		<LocalizationProvider dateAdapter={AdapterDayjs}>  {/* mui date-pickers */}
+			<CssBaseline />  {/* styles reset */}
+			<BrowserRouter>
+				<Layout>
+					<Routes>
+						<Route path={routePatterns.articles()} element={<ArticlesPage />} />
+						<Route path={routePatterns.addArticle()} element={<AddArticlePage />} />
+						<Route path={routePatterns.article()} element={<ArticlePage />} />
+						{/*<Route path={"/:articleId/edit"} element={<AddArticleForm />} />*/}
+					</Routes>
+				</Layout>
+			</BrowserRouter>
+		</LocalizationProvider>
 	</ThemeProvider>
 };
 

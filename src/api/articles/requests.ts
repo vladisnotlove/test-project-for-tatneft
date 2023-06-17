@@ -9,13 +9,24 @@ export const getArticlesFx = createEffect(async () => {
 	return articles;
 });
 
-export const postArticleFx = createEffect(async (data: ArticleModel) => {
+
+type PostArticleBody = Pick<ArticleModel, "author" | "theme" | "title" | "text" | "publishDate">
+
+export const postArticleFx = createEffect(async (data: PostArticleBody) => {
+	// create new article
+	const newArticle: ArticleModel = {
+		id: Date.now(),
+		...data,
+		shortText: data.text.trim().split(" ").slice(0, 5).join(" "),
+		commentsCount: 0,
+	}
+	// save to local storage
 	const raw = localStorage.getItem("articles");
 	const articles = raw ? JSON.parse(raw) as ArticleModel[] : [];
-	const newArticles = [...articles, data];
+	const newArticles = [...articles, newArticle];
 	localStorage.setItem("articles", JSON.stringify(newArticles));
 	await wait(1000);
-	return data;
+	return newArticle;
 });
 
 export const deleteArticleFx = createEffect(async (id: number) => {
