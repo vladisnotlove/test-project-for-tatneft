@@ -53,10 +53,6 @@ const Left = styled("div")`
 `;
 
 const Main = styled("div")`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  grid-area: main;
-  gap: ${p => p.theme.spacing(3)};
   height: fit-content;
 `;
 

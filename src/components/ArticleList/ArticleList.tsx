@@ -1,14 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, CircularProgress, styled, Typography } from "@mui/material";
-import { useStore } from "effector-react";
-import { getArticlesFx, postArticleFx } from "@/api/articles/requests";
+import { useStore, useEvent } from "effector-react";
+import { getArticlesFx, GetArticlesParams, postArticleFx } from "@/api/articles/requests";
 import ArticleCard from "@/components/ArticleCard";
 import { useNavigate } from "react-router";
 import routes from "@/constants/routes";
 import ArticleFilters, { FormValues } from "@/components/ArticleList/ArticleFilters";
 import ArticleSearch from "@/components/ArticleList/ArticleSearch";
-import useFilteredArticles from "@/components/ArticleList/useFilteredArticles";
-import { $articles, $articlesLoaded } from "@/components/App/state";
+import {
+	$articles,
+	$filters,
+	$searchText,
+	filter,
+	search
+} from "@/components/App/state";
 import TwoPaneLayout from "@/components/@layouts/TwoPaneLayout/TwoPaneLayout";
 
 type ArticleListProps = {
@@ -23,28 +28,22 @@ const ArticleList: React.FC<ArticleListProps> = (
 ) => {
 	const navigate = useNavigate();
 
-	const articlesLoaded = useStore($articlesLoaded);
+	const loadingArticles = useStore(getArticlesFx.pending);
 	const articles = useStore($articles);
 
-	const [filters, setFilters] = useState<FormValues>({
-		authors: [],
-		themes: [],
-		publishDate: null,
-	});
-	const [searchText, setSearchText] = useState<string>("");
+	const [filters, filtered] = useStore($filters);
+	const filterFn = useEvent(filter);
 
-	const params = useMemo(() => {
-		return {
-			...filters,
-			searchText
-		};
-	}, [filters, searchText]);
+	const [searchText, searched] = useStore($searchText);
+	const searchFn = useEvent(search);
 
 	useEffect(() => {
-		if (!articlesLoaded) getArticlesFx();
-	}, [articlesLoaded]);
-
-	const filteredArticles = useFilteredArticles(articles, params);
+		const params: GetArticlesParams = {
+			...filters,
+			searchText,
+		}
+		getArticlesFx(filtered || searched ? params : undefined);
+	}, [filters, filtered, searchText, searched]);
 
 	return <TwoPaneLayout
 		className={className}
@@ -61,29 +60,37 @@ const ArticleList: React.FC<ArticleListProps> = (
 		left={
 			<FiltersPane>
 				<ArticleSearch
-					onSubmit={setSearchText}
+					onSubmit={searchFn}
+					defaultValue={searchText}
+					enableClear={searched}
 				/>
 				<ArticleFilters
-					onSubmit={setFilters}
+					onSubmit={filterFn}
+					defaultValues={filters}
+					disableReset={!filtered}
 				/>
 			</FiltersPane>
 		}
 	>
-		{!articlesLoaded && (
+		{loadingArticles && (
 			<Loading/>
 		)}
-		{articlesLoaded && filteredArticles.map((article) => {
-			return <ArticleCard
-				key={article.id}
-				article={article}
-			/>;
-		})}
-		{articlesLoaded && articles.length === 0 &&
+		{!loadingArticles &&
+			<ArticleCards>
+				{!loadingArticles && articles.map((article) => {
+					return <ArticleCard
+						key={article.id}
+						article={article}
+					/>;
+				})}
+			</ArticleCards>
+		}
+		{!loadingArticles && articles.length === 0 && !filtered && !searched &&
 			<Typography color={"text.secondary"}>
 				Нет статей
 			</Typography>
 		}
-		{articlesLoaded && articles.length > 0 && filteredArticles.length === 0 &&
+		{!loadingArticles && articles.length === 0 && (filtered || searched) &&
 			<Typography color={"text.secondary"}>
 				Статьи не найдены
 			</Typography>
@@ -95,6 +102,13 @@ const FiltersPane = styled("div")`
   display: flex;
   flex-direction: column;
   gap: ${p => p.theme.spacing(5)};
+`;
+
+const ArticleCards = styled("div")`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-area: main;
+  gap: ${p => p.theme.spacing(3)};
 `;
 
 const Loading = styled((props: React.HTMLAttributes<HTMLDivElement>) => <div {...props}><CircularProgress/></div>)`

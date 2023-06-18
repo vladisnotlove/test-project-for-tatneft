@@ -6,15 +6,19 @@ type ArticleSearchProps = {
 	className?: string,
 	children?: React.ReactNode,
 	onSubmit: (searchText: string) => void,
+	defaultValue?: string,
+	enableClear?: boolean,
 }
 
 const ArticleSearch: React.FC<ArticleSearchProps> = (
 	{
 		className,
 		onSubmit,
+		defaultValue,
+		enableClear,
 	}
 ) => {
-	const [value, setValue] = useState("");
+	const [value, setValue] = useState(defaultValue);
 
 	return <Root
 		className={className}
@@ -34,7 +38,7 @@ const ArticleSearch: React.FC<ArticleSearchProps> = (
 			placeholder={"Тема или заголовок"}
 			InputProps={{
 				endAdornment: <InputAdornment position={"end"}>
-					{value &&
+					{enableClear &&
 						<IconButton
 							onClick={() => {
 								setValue("");
@@ -53,9 +57,8 @@ const ArticleSearch: React.FC<ArticleSearchProps> = (
 			}}
 			variant={"contained"}
 			size={"small"}
-			onClick={() => {
-				onSubmit(value);
-			}}
+			type={"submit"}
+			disabled={!value.trim()}
 		>
 			<SearchIcon/>
 		</Button>

@@ -12,7 +12,7 @@ export type FormValues = {
 	publishDate: number | null,
 }
 
-const defaultValues: FormValues = {
+const initialValues: FormValues = {
 	authors: [],
 	themes: [],
 	publishDate: null,
@@ -21,13 +21,17 @@ const defaultValues: FormValues = {
 type ArticleFiltersProps = {
 	className?: string,
 	children?: React.ReactNode,
-	onSubmit: (data: FormValues) => void
+	onSubmit: (data: FormValues) => void,
+	defaultValues?: FormValues,
+	disableReset?: boolean,
 }
 
 const ArticleFilters: React.FC<ArticleFiltersProps> = (
 	{
 		className,
 		onSubmit,
+		defaultValues,
+		disableReset,
 	}
 ) => {
 	const buttonRef = useRef<HTMLButtonElement | null>(null);
@@ -39,7 +43,10 @@ const ArticleFilters: React.FC<ArticleFiltersProps> = (
 		control,
 		reset,
 	} = useForm<FormValues>({
-		defaultValues: defaultValues,
+		defaultValues: {
+			...initialValues,
+			...defaultValues
+		},
 		mode: "onChange"
 	});
 
@@ -147,8 +154,9 @@ const ArticleFilters: React.FC<ArticleFiltersProps> = (
 				type={"button"}
 				onClick={() => {
 					reset();
-					onSubmit(defaultValues)
+					onSubmit(initialValues)
 				}}
+				disabled={disableReset}
 			>
 				Сбросить
 			</Button>

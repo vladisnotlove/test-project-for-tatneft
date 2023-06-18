@@ -1,10 +1,54 @@
 import { createEffect } from "effector";
 import { ArticleModel } from "./models";
 import wait from "@/api/@helpers/wait";
+import dayjs from "dayjs";
 
-export const getArticlesFx = createEffect(async () => {
+export type GetArticlesParams = {
+	searchText?: string,
+	themes?: string[],
+	authors?: string[],
+	publishDate?: number,
+}
+
+const normalizeString = (str: string) => {
+	return str.toLowerCase().trim();
+}
+
+export const getArticlesFx = createEffect(async (params?: GetArticlesParams) => {
+
+	// get articles
 	const raw = localStorage.getItem("articles");
-	const articles = raw ? JSON.parse(raw) as ArticleModel[] : [];
+	let articles = raw ? JSON.parse(raw) as ArticleModel[] : [];
+
+	// filter articles
+	if (params) {
+		const normalSearchText = params.searchText ? normalizeString(params.searchText) : undefined;
+
+		articles = articles.filter(article => {
+			const normalTitle = normalizeString(article.title);
+			const normalTheme = normalizeString(article.theme);
+
+			if (params.authors && params.authors.length > 0) {
+				if (!params.authors.includes(article.author)) return false;
+			}
+			if (params.themes && params.themes.length > 0) {
+				if (!params.themes.includes(article.theme)) return false;
+			}
+			if (params.publishDate) {
+				const onlyDate = (date: number) => dayjs(date).format("DD-MM-YYYY")
+				if (onlyDate(params.publishDate) !== onlyDate(article.publishDate)) return false;
+			}
+			if (normalSearchText) {
+				if ((
+					!normalTitle.includes(normalSearchText)
+				) && (
+					!normalTheme.includes(normalSearchText)
+				)) return false;
+			}
+			return true;
+		});
+	}
+
 	await wait(600);
 	return articles;
 });

@@ -1,12 +1,12 @@
-import { createStore } from "effector";
+import { createEvent, createStore } from "effector";
 import { ArticleModel } from "@/api/articles/models";
 import { deleteArticleFx, getArticleFx, getArticlesFx, patchArticleFx, postArticleFx } from "@/api/articles/requests";
 import { CommentModel } from "@/api/comments/models";
 import { getCommentsEx, postCommentEx } from "@/api/comments/requests";
-import article from "@/components/Article";
+import deepEqual from "deep-equal"
 
-export const $articlesLoaded = createStore(false)
-	.on(getArticlesFx.doneData, () => true);
+
+// articles
 
 export const $articles = createStore<ArticleModel[]>([])
 	.on(getArticlesFx.doneData, (state, payload) => payload)
@@ -41,6 +41,41 @@ export const $authors = createStore<string[]>([])
 		const allAuthors = payload.map(article => article.author);
 		return [...new Set(allAuthors)]; // remove duplicates
 	});
+
+// filters
+
+type Filters = {
+	publishDate: null | number,
+	themes: string[],
+	authors: string[],
+}
+
+const initialFilters: Filters = {
+	publishDate: null,
+	themes: [],
+	authors: [],
+};
+
+export const filter = createEvent<Filters>();
+
+export const $filters = createStore<[Filters, boolean]>([initialFilters, false])  // [filters, filtered]
+	.on(filter, (state, payload) => {
+		const applied = !deepEqual(payload, initialFilters);
+		return [payload, applied];
+	})
+
+// search
+
+export const search = createEvent<string>();
+
+export const $searchText = createStore<[string, boolean]>(["", false])  // [search, searched]
+	.on(search, (state, payload) => {
+		const applied = payload.trim() !== "";
+		return [payload, applied]
+	})
+
+
+// one article
 
 export const $article = createStore<ArticleModel | null>(null)
 	.on(getArticleFx.doneData, (state, payload) => payload)
