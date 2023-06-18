@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "effector-react";
-import { getArticlesFx } from "@/api/articles/requests";
+import { getArticleFx } from "@/api/articles/requests";
 import { useParams } from "react-router";
 import { styled, Typography, CircularProgress, TypographyProps, Container } from "@mui/material";
 import ArticleBlock from "@/components/Article/ArticleBlock";
-import { $articles, $articlesLoaded } from "@/components/App/state";
+import { $article } from "@/components/App/state";
 
 type ArticleProps = {
 	className?: string,
@@ -23,28 +23,26 @@ const Article: React.FC<ArticleProps> = (
 		return value;
 	}, [params]);
 
-	const articlesLoaded = useStore($articlesLoaded);
-	const articles = useStore($articles);
-	const article = useMemo(() => {
-		return articles.find(article => article.id === id) ?? null;
-	}, [id, articles]);
+	const articleLoading = useStore(getArticleFx.pending);
+	const article = useStore($article);
 
-	// fetch articles
+	// fetch article
+
 	useEffect(() => {
-		if (!articlesLoaded) getArticlesFx();
-	}, [articlesLoaded]);
+		getArticleFx(id);
+	}, [id]);
 
 	return <Root
 		className={className}
 		maxWidth={"md"}
 	>
-		{!articlesLoaded &&
+		{articleLoading &&
 			<Loading />
 		}
-		{articlesLoaded && article &&
+		{!articleLoading && article &&
 			<ArticleBlock article={article} />
 		}
-		{articlesLoaded && !article &&
+		{!articleLoading && !article &&
 			<NotFound>
 				Статья не найдена
 			</NotFound>
@@ -55,6 +53,9 @@ const Article: React.FC<ArticleProps> = (
 const Root = styled(Container)`
   position: relative;
   min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: ${p => p.theme.spacing(3)}
 `;
 
 const Loading = styled((props: React.HTMLAttributes<HTMLDivElement>) => <div {...props}><CircularProgress /></div>)`

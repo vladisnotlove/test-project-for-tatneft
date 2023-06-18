@@ -1,6 +1,6 @@
 import { createStore } from "effector";
 import { ArticleModel } from "@/api/articles/models";
-import { deleteArticleFx, getArticlesFx, patchArticleFx, postArticleFx } from "@/api/articles/requests";
+import { deleteArticleFx, getArticleFx, getArticlesFx, patchArticleFx, postArticleFx } from "@/api/articles/requests";
 import { CommentModel } from "@/api/comments/models";
 import { getCommentsEx, postCommentEx } from "@/api/comments/requests";
 
@@ -31,6 +31,13 @@ export const $authors = createStore<string[]>([])
 		const allAuthors = payload.map(article => article.author);
 		return [...new Set(allAuthors)]; // remove duplicates
 	});
+
+export const $article = createStore<ArticleModel | null>(null)
+	.on(getArticleFx.doneData, (state, payload) => payload)
+	.on(patchArticleFx.doneData, (state, payload) => {
+		if (state.id === payload.id) return payload;
+		return state;
+	})
 
 export const $comments = createStore<CommentModel[]>([])
 	.on(getCommentsEx.doneData, (state, payload) => payload)

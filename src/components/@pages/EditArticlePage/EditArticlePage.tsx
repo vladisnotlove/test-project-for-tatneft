@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo } from "react";
 import AddArticleForm from "@/components/AddArticleForm";
 import { useNavigate, useParams } from "react-router";
-import { getArticlesFx, patchArticleFx, postArticleFx } from "@/api/articles/requests";
+import { getArticleFx, patchArticleFx } from "@/api/articles/requests";
 import routes from "@/constants/routes";
 import { useStore } from "effector-react";
-import { ArticleModel } from "@/api/articles/models";
 import { CircularProgress, Container, styled, Typography, TypographyProps } from "@mui/material";
-import { $articles, $articlesLoaded } from "@/components/App/state";
+import { $article } from "@/components/App/state";
 
 type EditArticlePageProps = {
 	className?: string,
@@ -21,33 +20,29 @@ const EditArticlePage: React.FC<EditArticlePageProps> = (
 	const navigate = useNavigate();
 	const params = useParams();
 	const id = useMemo<number | null>(() => {
-		const id =  parseFloat(params.articleId);
-		if (isNaN(id)) return null;
-		return id;
-	}, [params.articleId]);
+		const value = parseFloat(params.articleId);
+		if (isNaN(value)) return null;
+		return value;
+	}, [params]);
 
-	const articlesLoaded = useStore($articlesLoaded);
-	const articles = useStore($articles);
-	const article = useMemo<ArticleModel | null>(() => {
-		if (id === null) return null;
-		return articles.find(article => article.id === id);
-	}, [articles, id]);
+	const articleLoading = useStore(getArticleFx.pending);
+	const article = useStore($article);
+
+	// fetch article
 
 	useEffect(() => {
-		if (!articlesLoaded) {
-			getArticlesFx()
-		}
-	}, [articlesLoaded])
+		getArticleFx(id);
+	}, [id]);
 
 	const patching = useStore(patchArticleFx.pending);
 
-	if (!articlesLoaded) {
+	if (articleLoading) {
 		return <StyledContainer>
 			<Loading />
 		</StyledContainer>
 	}
 
-	if (articlesLoaded && !article) {
+	if (!articleLoading && !article) {
 		return <StyledContainer>
 			<NotFound>
 				Статья для редактирования не найдена

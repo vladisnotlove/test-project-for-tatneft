@@ -9,6 +9,15 @@ export const getArticlesFx = createEffect(async () => {
 	return articles;
 });
 
+export const getArticleFx = createEffect(async (id: number) => {
+	const raw = localStorage.getItem("articles");
+	const articles = raw ? JSON.parse(raw) as ArticleModel[] : [];
+	const index = articles.findIndex(article => article.id === id);
+	await wait(1000);
+	if (index === -1) return null;
+	return articles[index];
+});
+
 type PostArticleBody = Pick<ArticleModel, "author" | "theme" | "title" | "text" | "publishDate">
 
 export const postArticleFx = createEffect(async (data: PostArticleBody) => {
