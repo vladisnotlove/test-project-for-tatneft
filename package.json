@@ -2,7 +2,7 @@
   "name": "test-project-for-tatneft",
   "version": "0.1.0",
   "scripts": {
-    "build": "webpack & ncp public dist",
+    "build": "webpack --mode production & ncp public dist",
     "dev": "webpack serve --mode development"
   },
   "dependencies": {
