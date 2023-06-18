@@ -5,7 +5,7 @@ import wait from "@/api/@helpers/wait";
 export const getArticlesFx = createEffect(async () => {
 	const raw = localStorage.getItem("articles");
 	const articles = raw ? JSON.parse(raw) as ArticleModel[] : [];
-	await wait(1000);
+	await wait(600);
 	return articles;
 });
 
@@ -13,7 +13,7 @@ export const getArticleFx = createEffect(async (id: number) => {
 	const raw = localStorage.getItem("articles");
 	const articles = raw ? JSON.parse(raw) as ArticleModel[] : [];
 	const index = articles.findIndex(article => article.id === id);
-	await wait(1000);
+	await wait(600);
 	if (index === -1) return null;
 	return articles[index];
 });
@@ -33,7 +33,7 @@ export const postArticleFx = createEffect(async (data: PostArticleBody) => {
 	const articles = raw ? JSON.parse(raw) as ArticleModel[] : [];
 	const changedArticles = [newArticle, ...articles];
 	localStorage.setItem("articles", JSON.stringify(changedArticles));
-	await wait(1000);
+	await wait(600);
 	return newArticle;
 });
 
@@ -51,7 +51,7 @@ export const patchArticleFx = createEffect(async (data: PatchArticleBody) => {
 	});
 	localStorage.setItem("articles", JSON.stringify(changedArticles));
 	const changedArticle = changedArticles.find(article => article.id === data.id);
-	await wait(1000);
+	await wait(600);
 	return changedArticle;
 });
 
@@ -60,7 +60,7 @@ export const deleteArticleFx = createEffect(async (id: number) => {
 	const articles = raw ? JSON.parse(raw) as ArticleModel[] : [];
 	const changedArticles = articles.filter(article => article.id !== id);
 	localStorage.setItem("articles", JSON.stringify(changedArticles));
-	await wait(1000);
+	await wait(600);
 	return id;
 });
 

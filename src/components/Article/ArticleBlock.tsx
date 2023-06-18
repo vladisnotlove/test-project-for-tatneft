@@ -5,11 +5,6 @@ import ArticleActions from "@/components/Article/ArticleActions";
 import CommentIcon from "@mui/icons-material/Comment";
 import dayjs from "dayjs";
 
-// Components
-
-// Stores, utils, libs
-
-
 type ArticleBlockProps = {
 	className?: string,
 	article: ArticleModel,

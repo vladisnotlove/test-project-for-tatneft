@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import AddArticleForm from "@/components/AddArticleForm";
 import { useNavigate, useParams } from "react-router";
 import { getArticleFx, patchArticleFx } from "@/api/articles/requests";
@@ -25,7 +25,7 @@ const EditArticlePage: React.FC<EditArticlePageProps> = (
 		return value;
 	}, [params]);
 
-	const articleLoading = useStore(getArticleFx.pending);
+	const loadingArticle = useStore(getArticleFx.pending);
 	const article = useStore($article);
 
 	// fetch article
@@ -36,13 +36,13 @@ const EditArticlePage: React.FC<EditArticlePageProps> = (
 
 	const patching = useStore(patchArticleFx.pending);
 
-	if (articleLoading) {
+	if (loadingArticle) {
 		return <StyledContainer>
 			<Loading />
 		</StyledContainer>
 	}
 
-	if (!articleLoading && !article) {
+	if (!loadingArticle && !article) {
 		return <StyledContainer>
 			<NotFound>
 				Статья для редактирования не найдена
@@ -65,7 +65,6 @@ const EditArticlePage: React.FC<EditArticlePageProps> = (
 
 const StyledContainer = styled(Container)`
   position: relative;
-  min-height: 100%;
 `;
 
 const Loading = styled((props: React.HTMLAttributes<HTMLDivElement>) => <div {...props}><CircularProgress /></div>)`

@@ -194,7 +194,6 @@ const AddArticleForm: React.FC<AddArticleProps> = (
 
 const Root = styled(Container)`
   position: relative;
-  min-height: 100%;
 `;
 
 const Form = styled("form")`

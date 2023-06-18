@@ -38,7 +38,13 @@ const StyledHeader = styled(Header)`
 const Content = styled("div")`
   min-height: calc(100vh - ${p => p.theme.spacing(headerHeight)});
   padding-bottom: ${p => p.theme.spacing(3)};
-  height: 1px;
+  
+  display: flex;
+  flex-direction: column;
+  
+  & > *:first-child {
+	flex-grow: 1;
+  }
 `
 
 export default Layout;

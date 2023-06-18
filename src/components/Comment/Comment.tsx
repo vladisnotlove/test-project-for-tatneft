@@ -3,6 +3,11 @@ import { styled, Typography } from "@mui/material";
 import { CommentModel } from "@/api/comments/models";
 import dayjs from "dayjs";
 
+const formatCreateDate = (date: number) => {
+	if (dayjs(date).diff(dayjs(), "d") > 7) return dayjs(date).format("DD.MM.YYYY")
+	return dayjs(date).fromNow()
+}
+
 type CommentProps = {
 	className?: string,
 	children?: React.ReactNode,
@@ -22,14 +27,14 @@ const Comment: React.FC<CommentProps> = (
 		<Author>
 			<Avatar />
 			<Typography variant={"body2"}>
-				{comment.author.name}
+				{comment.author || "Аноним"}
 			</Typography>
 		</Author>
 		<Typography variant={"body1"}>
 			{comment.text}
 		</Typography>
 		<CreateDate>
-			{dayjs(comment.createDate).toNow(true)}
+			{formatCreateDate(comment.createDate)}
 		</CreateDate>
 	</Root>;
 }

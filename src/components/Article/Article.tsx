@@ -5,6 +5,7 @@ import { useParams } from "react-router";
 import { styled, Typography, CircularProgress, TypographyProps, Container } from "@mui/material";
 import ArticleBlock from "@/components/Article/ArticleBlock";
 import { $article } from "@/components/App/state";
+import CommentsBlock from "@/components/Article/CommentsBlock";
 
 type ArticleProps = {
 	className?: string,
@@ -23,7 +24,7 @@ const Article: React.FC<ArticleProps> = (
 		return value;
 	}, [params]);
 
-	const articleLoading = useStore(getArticleFx.pending);
+	const loadingArticle = useStore(getArticleFx.pending);
 	const article = useStore($article);
 
 	// fetch article
@@ -36,13 +37,16 @@ const Article: React.FC<ArticleProps> = (
 		className={className}
 		maxWidth={"md"}
 	>
-		{articleLoading &&
+		{loadingArticle &&
 			<Loading />
 		}
-		{!articleLoading && article &&
-			<ArticleBlock article={article} />
+		{!loadingArticle && article &&
+			<>
+				<ArticleBlock article={article} />
+				<CommentsBlock articleId={article.id} />
+			</>
 		}
-		{!articleLoading && !article &&
+		{!loadingArticle && !article &&
 			<NotFound>
 				Статья не найдена
 			</NotFound>
@@ -52,7 +56,6 @@ const Article: React.FC<ArticleProps> = (
 
 const Root = styled(Container)`
   position: relative;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
   gap: ${p => p.theme.spacing(3)}

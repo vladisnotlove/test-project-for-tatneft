@@ -9,6 +9,7 @@ import ArticleFilters, { FormValues } from "@/components/ArticleList/ArticleFilt
 import ArticleSearch from "@/components/ArticleList/ArticleSearch";
 import useFilteredArticles from "@/components/ArticleList/useFilteredArticles";
 import { $articles, $articlesLoaded } from "@/components/App/state";
+import TwoPaneLayout from "@/components/@layouts/TwoPaneLayout/TwoPaneLayout";
 
 type ArticleListProps = {
 	className?: string,
@@ -36,8 +37,8 @@ const ArticleList: React.FC<ArticleListProps> = (
 		return {
 			...filters,
 			searchText
-		}
-	}, [filters, searchText])
+		};
+	}, [filters, searchText]);
 
 	useEffect(() => {
 		if (!articlesLoaded) getArticlesFx();
@@ -45,37 +46,9 @@ const ArticleList: React.FC<ArticleListProps> = (
 
 	const filteredArticles = useFilteredArticles(articles, params);
 
-	return <Root className={className}>
-		<FiltersContainer>
-			<ArticleSearch
-				onSubmit={setSearchText}
-			/>
-			<ArticleFilters
-				onSubmit={setFilters}
-			/>
-		</FiltersContainer>
-		<ArticlesContainer>
-			{!articlesLoaded && (
-				<Loading/>
-			)}
-			{articlesLoaded && filteredArticles.map((article) => {
-				return <ArticleCard
-					key={article.id}
-					article={article}
-				/>;
-			})}
-			{articlesLoaded && articles.length === 0 &&
-				<Typography color={"text.secondary"}>
-					Нет статей
-				</Typography>
-			}
-			{articlesLoaded && articles.length > 0 && filteredArticles.length === 0 &&
-				<Typography color={"text.secondary"}>
-					Статьи не найдены
-				</Typography>
-			}
-		</ArticlesContainer>
-		<ActionsContainer>
+	return <TwoPaneLayout
+		className={className}
+		right={
 			<Button
 				variant={"contained"}
 				onClick={() => {
@@ -84,35 +57,44 @@ const ArticleList: React.FC<ArticleListProps> = (
 			>
 				+ написать статью
 			</Button>
-		</ActionsContainer>
-	</Root>;
+		}
+		left={
+			<FiltersPane>
+				<ArticleSearch
+					onSubmit={setSearchText}
+				/>
+				<ArticleFilters
+					onSubmit={setFilters}
+				/>
+			</FiltersPane>
+		}
+	>
+		{!articlesLoaded && (
+			<Loading/>
+		)}
+		{articlesLoaded && filteredArticles.map((article) => {
+			return <ArticleCard
+				key={article.id}
+				article={article}
+			/>;
+		})}
+		{articlesLoaded && articles.length === 0 &&
+			<Typography color={"text.secondary"}>
+				Нет статей
+			</Typography>
+		}
+		{articlesLoaded && articles.length > 0 && filteredArticles.length === 0 &&
+			<Typography color={"text.secondary"}>
+				Статьи не найдены
+			</Typography>
+		}
+	</TwoPaneLayout>;
 };
 
-const Root = styled("div")`
-  display: grid;
-  grid-template-columns: 240px 1fr 200px;
-  grid-template-areas: 
-	"filters articles actions";
-  gap: ${p => p.theme.spacing(5)};
-  padding: ${p => p.theme.spacing(4, 2.5)};
-`;
-
-const FiltersContainer = styled("div")`
-  grid-area: filters;
+const FiltersPane = styled("div")`
   display: flex;
   flex-direction: column;
   gap: ${p => p.theme.spacing(5)};
-`;
-
-const ArticlesContainer = styled("div")`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  grid-area: articles;
-  gap: ${p => p.theme.spacing(3)}
-`;
-
-const ActionsContainer = styled("div")`
-  grid-area: actions;
 `;
 
 const Loading = styled((props: React.HTMLAttributes<HTMLDivElement>) => <div {...props}><CircularProgress/></div>)`
