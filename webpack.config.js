@@ -22,6 +22,7 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		clean: true,
+		publicPath: "/"
 	},
 
 	devServer: {
@@ -63,6 +64,7 @@ module.exports = {
 			"@/configs": path.resolve(__dirname, 'src/configs/'),
 			"@/constants": path.resolve(__dirname, 'src/constants/'),
 			"@/styles": path.resolve(__dirname, 'src/styles/'),
+			"@/utils": path.resolve(__dirname, 'src/utils/'),
 		},
 		extensions: ["*", ".js", ".jsx", ".ts", ".tsx", ".scss", "sass"],
 	},

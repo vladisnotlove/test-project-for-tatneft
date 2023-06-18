@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo } from "react";
 import AddArticleForm from "@/components/AddArticleForm";
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { getArticleFx, patchArticleFx } from "@/api/articles/requests";
 import routes from "@/constants/routes";
 import { useStore } from "effector-react";
 import { CircularProgress, Container, styled, Typography, TypographyProps } from "@mui/material";
 import { $article } from "@/components/App/state";
+import useUpdatedRef from "@/utils/useUpdatedRef";
 
 type EditArticlePageProps = {
 	className?: string,
@@ -27,11 +28,12 @@ const EditArticlePage: React.FC<EditArticlePageProps> = (
 
 	const loadingArticle = useStore(getArticleFx.pending);
 	const article = useStore($article);
+	const articleRef = useUpdatedRef(article);
 
 	// fetch article
 
 	useEffect(() => {
-		getArticleFx(id);
+		if (articleRef.current?.id !== id) getArticleFx(id);
 	}, [id]);
 
 	const patching = useStore(patchArticleFx.pending);
@@ -53,8 +55,7 @@ const EditArticlePage: React.FC<EditArticlePageProps> = (
 	return <AddArticleForm
 		className={className}
 		title={"Редактирование статьи"}
-		onSubmit={data => {
-			patchArticleFx({...data, id: article.id}).then(() => {
+		onSubmit={data => {patchArticleFx({...data, id: article.id}).then(() => {
 				navigate(routes.articles())
 			})
 		}}

@@ -6,6 +6,7 @@ import { styled, Typography, CircularProgress, TypographyProps, Container } from
 import ArticleBlock from "@/components/Article/ArticleBlock";
 import { $article } from "@/components/App/state";
 import CommentsBlock from "@/components/Article/CommentsBlock";
+import useUpdatedRef from "@/utils/useUpdatedRef";
 
 type ArticleProps = {
 	className?: string,
@@ -26,11 +27,12 @@ const Article: React.FC<ArticleProps> = (
 
 	const loadingArticle = useStore(getArticleFx.pending);
 	const article = useStore($article);
+	const articleRef = useUpdatedRef(article);
 
 	// fetch article
 
 	useEffect(() => {
-		getArticleFx(id);
+		if (articleRef.current?.id !== id) getArticleFx(id);
 	}, [id]);
 
 	return <Root

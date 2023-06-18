@@ -45,7 +45,10 @@ const CommentsBlock: React.FC<CommentsBlockProps> = (
 		{!loadingComments && comments.length > 0 &&
 			<CommentList>
 				{comments.map(comment => (
-					<Comment comment={comment} />
+					<Comment
+						key={comment.id}
+						comment={comment}
+					/>
 				))}
 			</CommentList>
 		}
